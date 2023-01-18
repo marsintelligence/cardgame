@@ -1,3 +1,4 @@
+import 'package:cardgame/constants.dart';
 import 'package:cardgame/models/cardModel.dart';
 import 'package:cardgame/models/turnModel.dart';
 import 'package:cardgame/services/deckService.dart';
@@ -58,6 +59,13 @@ abstract class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> drawCardToDiscardPile({int count = 1}) async {
+    final drawnCards = await service.drawCard(currentDeck!, drawCount: count);
+    discards.addAll(drawnCards.cards);
+    currentDeck!.remaining = drawnCards.remaining;
+    notifyListeners();
+  }
+
   bool canDrawCard() {
     return turn.drawCount < 1;
   }
@@ -98,6 +106,8 @@ abstract class GameProvider with ChangeNotifier {
     discards.add(card);
     await applyCardSideEffects(card);
     turn.actionCount++;
+    gameState[GS_LAST_CARD_SUIT] = card.suit;
+    gameState[GS_LAST_CARD_VALUE] = card.value;
   }
 
   Future<void> applyCardSideEffects(CardModel card) async {}

@@ -1,4 +1,7 @@
+import 'package:cardgame/constants.dart';
 import 'package:cardgame/providers/gameProvider.dart';
+
+import '../models/cardModel.dart';
 
 class CrazyEightsGameProvider extends GameProvider {
   @override
@@ -9,9 +12,19 @@ class CrazyEightsGameProvider extends GameProvider {
     await drawCardToDiscardPile();
   }
 
-  Future<void> drawCardToDiscardPile({int count = 1}) async {
-    final drawnCards = await service.drawCard(currentDeck!, drawCount: count);
-    discards.addAll(drawnCards.cards);
-    notifyListeners();
+  @override
+  bool canPlayCard(CardModel card) {
+    bool canPlay = false;
+    if (gameState[GS_LAST_CARD_SUIT] == null ||
+        gameState[GS_LAST_CARD_VALUE] == null) {
+      return false;
+    }
+    if (gameState[GS_LAST_CARD_SUIT] == card.suit) {
+      return true;
+    }
+    if (gameState[GS_LAST_CARD_VALUE] == card.value) {
+      return true;
+    }
+    return canPlay;
   }
 }
