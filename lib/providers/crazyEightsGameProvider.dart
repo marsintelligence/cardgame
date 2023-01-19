@@ -10,6 +10,7 @@ class CrazyEightsGameProvider extends GameProvider {
       await drawCard(p, count: 8, allowAnyTime: true);
     }
     await drawCardToDiscardPile();
+    setLastCard(discardTop!);
   }
 
   @override
@@ -25,6 +26,7 @@ class CrazyEightsGameProvider extends GameProvider {
     if (gameState[GS_LAST_CARD_VALUE] == card.value) {
       return true;
     }
+    if (card.value == "8") return true;
     return canPlay;
   }
 }
