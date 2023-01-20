@@ -37,6 +37,7 @@ abstract class GameProvider with ChangeNotifier {
 
   CardModel? get discardTop => discards.isEmpty ? null : discards.last;
   Map<String, dynamic> gameState = {};
+
   Future<void> newGame(List<PlayerModel> players) async {
     final deck = await service.newDeck();
     _currentDeck = deck;
@@ -55,7 +56,6 @@ abstract class GameProvider with ChangeNotifier {
     player.addCards(drawCards.cards);
     turn.drawCount += count;
     currentDeck!.remaining = drawCards.remaining;
-
     notifyListeners();
   }
 
@@ -84,6 +84,10 @@ abstract class GameProvider with ChangeNotifier {
 
   Future<void> botTurn() async {
     await Future.delayed(const Duration(milliseconds: 500));
+    for (var card in turn.currentPlayer.cards) {
+      await playCard(player: turn.currentPlayer, card: card);
+    }
+
     await drawCard(turn.currentPlayer);
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -103,10 +107,11 @@ abstract class GameProvider with ChangeNotifier {
       {required PlayerModel player, required CardModel card}) async {
     if (!canPlayCard(card)) return;
     player.removeCards(card);
-    discards.add(card);
+    _discards.add(card);
     await applyCardSideEffects(card);
-    turn.actionCount++;
+    turn.actionCount += 1;
     setLastCard(card);
+    notifyListeners();
   }
 
   setLastCard(CardModel card) {
