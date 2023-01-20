@@ -106,6 +106,10 @@ abstract class GameProvider with ChangeNotifier {
     discards.add(card);
     await applyCardSideEffects(card);
     turn.actionCount++;
+    setLastCard(card);
+  }
+
+  setLastCard(CardModel card) {
     gameState[GS_LAST_CARD_SUIT] = card.suit;
     gameState[GS_LAST_CARD_VALUE] = card.value;
   }
