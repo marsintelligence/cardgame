@@ -20,10 +20,9 @@ class TurnModel {
   }
 
   void nextTurn() {
-    index++;
+    index = index + 1;
     currentPlayer = (index % 2 == 0) ? players[0] : players[1];
     drawCount = 0;
     actionCount = 0;
-    print('next turn called');
   }
 }
