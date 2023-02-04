@@ -1,4 +1,5 @@
 import 'package:cardgame/constants.dart';
+import 'package:cardgame/main.dart';
 import 'package:cardgame/models/cardModel.dart';
 import 'package:cardgame/models/turnModel.dart';
 import 'package:cardgame/services/deckService.dart';
@@ -35,8 +36,27 @@ abstract class GameProvider with ChangeNotifier {
     return _discards;
   }
 
+  Widget? bottomWidget;
+
   CardModel? get discardTop => discards.isEmpty ? null : discards.last;
   Map<String, dynamic> gameState = {};
+
+  void setBottomWidget(Widget? widget) {
+    bottomWidget = widget;
+    notifyListeners();
+  }
+
+  void setTrump(Suit suit) {
+    setBottomWidget(Card(
+      child: Text(
+        CardModel.suitToUnicode(suit),
+        style: TextStyle(
+          color: CardModel.suitToColor(suit),
+          fontSize: 24,
+        ),
+      ),
+    ));
+  }
 
   Future<void> newGame(List<PlayerModel> players) async {
     final deck = await service.newDeck();
@@ -67,7 +87,7 @@ abstract class GameProvider with ChangeNotifier {
   }
 
   bool canDrawCard() {
-    return turn.drawCount < 1;
+    return turn.drawCount < 1 && turn.actionCount < 1;
   }
 
   bool canEndTurn() {
@@ -100,23 +120,61 @@ abstract class GameProvider with ChangeNotifier {
   }
 
   bool canPlayCard(CardModel card) {
-    return turn.actionCount < 1;
+    bool canPlay = true;
+    if (turn.actionCount > 1 || gameIsOver) {
+      canPlay = false;
+    }
+    return canPlay;
   }
 
   Future<void> playCard(
       {required PlayerModel player, required CardModel card}) async {
-    if (!canPlayCard(card)) return;
+    if (turn.actionCount >= 1) {
+      showToast("You cant play that");
+      return;
+    }
+
+    if (canPlayCard(card) == false) return;
     player.removeCards(card);
+
     _discards.add(card);
-    await applyCardSideEffects(card);
-    turn.actionCount += 1;
+
+    turn.actionCount = turn.actionCount + 1;
+    showToast("${turn.currentPlayer.name}played a card ${turn.actionCount}");
     setLastCard(card);
+    await applyCardSideEffects(card);
+    if (gameIsOver) {
+      finishGame();
+    }
+    notifyListeners();
+  }
+
+  void skipTurn() {
+    turn.nextTurn();
+    notifyListeners();
+  }
+
+  bool get gameIsOver {
+    return currentDeck!.remaining < 1;
+  }
+
+  void finishGame() {
+    showToast("Game Is Over");
     notifyListeners();
   }
 
   setLastCard(CardModel card) {
     gameState[GS_LAST_CARD_SUIT] = card.suit;
     gameState[GS_LAST_CARD_VALUE] = card.value;
+    setTrump(card.suit);
+  }
+
+  void showToast(String msg, {int seconds = 3, SnackBarAction? action}) {
+    rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: Duration(seconds: seconds),
+      action: action,
+    ));
   }
 
   Future<void> applyCardSideEffects(CardModel card) async {}
