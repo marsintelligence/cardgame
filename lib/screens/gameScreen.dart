@@ -1,24 +1,28 @@
 import 'package:cardgame/components/gameBoard.dart';
+import 'package:cardgame/main.dart';
 import 'package:cardgame/providers/crazyEightsGameProvider.dart';
+import 'package:cardgame/providers/rummyGameProvider.dart';
 import 'package:cardgame/services/deckService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../models/playerModel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GameScreen extends StatefulWidget {
+class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   @override
-  State<GameScreen> createState() => _GameScreenState();
+  ConsumerState<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
-  late final CrazyEightsGameProvider gameProvider;
+class _GameScreenState extends ConsumerState<GameScreen> {
+  late CrazyEightsGameProvider gameProvider;
+  late final RummyGameProvider rummyGameProvider;
   @override
   void initState() {
     super.initState();
-    gameProvider = Provider.of<CrazyEightsGameProvider>(context, listen: false);
+
+    //rummyGameProvider = Provider.of<RummyGameProvider>(context, listen: false);
   }
 
   /*void tempFunction() async {
@@ -33,6 +37,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    gameProvider = ref.watch(crazyeightsProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Card Game'),
@@ -46,6 +51,7 @@ class _GameScreenState extends State<GameScreen> {
                     isHuman: false,
                   ),
                 ];
+
                 await gameProvider.newGame(players);
               },
               child: const Text('New Game'))

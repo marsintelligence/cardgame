@@ -1,12 +1,17 @@
 import 'package:cardgame/providers/crazyEightsGameProvider.dart';
+import 'package:cardgame/providers/rummyGameProvider.dart';
 import 'package:cardgame/screens/gameScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
+final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final crazyeightsProvider = ChangeNotifierProvider<CrazyEightsGameProvider>(
+    (ref) => CrazyEightsGameProvider());
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider())
-  ], child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,6 +25,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       home: GameScreen(),
     );
   }
