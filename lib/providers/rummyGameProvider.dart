@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 import 'package:cardgame/models/cardModel.dart';
 import 'package:cardgame/providers/gameProvider.dart';
 
 import '../models/playerModel.dart';
 
+=======
+import 'package:cardgame/providers/gameProvider.dart';
+
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
 class RummyGameProvider extends GameProvider {
   @override
   Future<void> setupBoard() async {
@@ -13,6 +18,7 @@ class RummyGameProvider extends GameProvider {
         allowAnyTime: true,
       );
     }
+<<<<<<< HEAD
   }
 
   @override
@@ -67,5 +73,8 @@ class RummyGameProvider extends GameProvider {
       ...heartCards,
       ...diamondCards
     ];
+=======
+    drawCardToDiscardPile();
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
   }
 }

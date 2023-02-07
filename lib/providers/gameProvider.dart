@@ -61,6 +61,7 @@ abstract class GameProvider with ChangeNotifier {
     ));
   }
 
+<<<<<<< HEAD
   startNewGame() async {
     option = await showDialog(
       context: navigatorKey.currentContext!,
@@ -68,6 +69,8 @@ abstract class GameProvider with ChangeNotifier {
     );
   }
 
+=======
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
   Future<void> newGame(List<PlayerModel> players) async {
     final deck = await service.newDeck();
     _currentDeck = deck;
@@ -318,6 +321,7 @@ abstract class GameProvider with ChangeNotifier {
       duration: Duration(seconds: seconds),
       action: action,
     ));
+<<<<<<< HEAD
   }
 
   bool canDrawFromDiscardPile() {
@@ -379,6 +383,8 @@ abstract class GameProvider with ChangeNotifier {
       ...heartCards,
       ...diamondCards
     ];
+=======
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
   }
 
   Future<void> applyCardSideEffects(CardModel card) async {}

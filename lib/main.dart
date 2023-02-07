@@ -10,8 +10,18 @@ final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final crazyeightsProvider = ChangeNotifierProvider<CrazyEightsGameProvider>(
     (ref) => CrazyEightsGameProvider());
 
+final navigatorKey = GlobalKey<NavigatorState>();
+final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() {
+<<<<<<< HEAD
   runApp(const ProviderScope(child: MyApp()));
+=======
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => CrazyEightsGameProvider()),
+    ChangeNotifierProvider(create: (_) => RummyGameProvider()),
+  ], child: const MyApp()));
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
 }
 
 class MyApp extends StatelessWidget {

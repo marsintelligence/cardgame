@@ -15,6 +15,7 @@ class GameBoard extends ConsumerWidget {
   GameBoard({Key? key}) : super(key: key);
 
   @override
+<<<<<<< HEAD
   Widget build(BuildContext context, WidgetRef ref) {
     final gameProvider = ref.watch(crazyeightsProvider);
 
@@ -101,5 +102,95 @@ class GameBoard extends ConsumerWidget {
               ]);
             }),
             child: const Text('New Game?'));
+=======
+  Widget build(BuildContext context) {
+    return Consumer<CrazyEightsGameProvider>(
+      builder: (context, value, child) {
+        return value.currentDeck != null
+            ? Column(
+                children: [
+                  PlayerInfo(turn: value.turn),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    GestureDetector(
+                                        child: DeckPile(
+                                            remaining:
+                                                value.currentDeck!.remaining),
+                                        onTap: () async {
+                                          await value.drawCard(
+                                              value.turn.currentPlayer);
+                                        }),
+                                    const SizedBox(width: 8),
+                                    DiscardPile(cards: value.discards)
+                                  ],
+                                ),
+                                if (value.bottomWidget != null)
+                                  value.bottomWidget!
+                              ],
+                            )),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: CardList(
+                            playerModel: value.players[1],
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      if (value.turn.currentPlayer ==
+                                          value.players[0])
+                                        ElevatedButton(
+                                            onPressed: value.canEndTurn()
+                                                ? () {
+                                                    value.endTurn();
+                                                  }
+                                                : null,
+                                            child: const Text('End Turn')),
+                                    ],
+                                  ),
+                                ),
+                                CardList(
+                                  playerModel: value.players[0],
+                                  onPlayCard: (CardModel card) {
+                                    value.playCard(
+                                      player: value.players[0],
+                                      card: card,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ))
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : TextButton(
+                onPressed: (() async {
+                  await value.newGame([
+                    PlayerModel(name: "Munawwar", isHuman: true),
+                    PlayerModel(name: "Computer", isHuman: false)
+                  ]);
+                }),
+                child: const Text('New Game?'));
+      },
+    );
+>>>>>>> b52ee3b7f36caad9a4eec09f012488a70e46aa74
   }
 }
